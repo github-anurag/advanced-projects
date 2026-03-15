@@ -4,17 +4,21 @@ package main
 import "fmt"
 
 func removeDuplicates(s []int) []int {
-	m := make(map[int]bool)
-	t := []int{}
-	for _, i := range s {
-		_, ok := m[i]
-		if !ok {
-			t = append(t, i)
-			m[i] = true
-			fmt.Printf("Adding %d in map\n", i)
-		}
-	}
-	return t
+    // 1. Pre-allocate capacity to match input length
+    // length is 0, but capacity is len(s)
+    t := make([]int, 0, len(s)) 
+    
+    // 2. Use struct{} in the map to save memory 
+    // map[int]struct{} takes 0 bytes for the value
+    m := make(map[int]struct{}) 
+    
+    for _, i := range s {
+        if _, exists := m[i]; !exists {
+            m[i] = struct{}{}
+            t = append(t, i) // No reallocations happen here!
+        }
+    }
+    return t
 }
 
 func main() {
